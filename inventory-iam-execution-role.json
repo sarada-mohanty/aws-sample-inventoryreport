@@ -1,10 +1,18 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
+     "Parameters": {
+         "MasterAccountId": {
+             "Type": "String",
+             "Description": "AWS Account ID of the Inventory master account (Account where inventory lambda script is running)",
+             "MaxLength": 12,
+             "MinLength": 12
+         }
+     },
      "Resources": {
-         "cloudwatchalarm": {
+         "InventoryExecutionRole": {
              "Type": "AWS::IAM::Role",
              "Properties": {
-                 "RoleName": "inventory-iam-execution-role",
+                 "RoleName": "Inventory-IAM-Execution-Role",
                  "Description":"This IAM role allows master lambda inventory to execute inventory scan",
                  "AssumeRolePolicyDocument": {
                      "Version": "2012-10-17",
@@ -12,40 +20,27 @@
                          {
                              "Effect": "Allow",
                              "Principal": {
-                                 "AWS": "arn:aws:iam::<master-account-number>:root"
+                                 "AWS": {"Ref": "MasterAccountId"}
                              },
                              "Action": [
                                  "sts:AssumeRole"
                              ]
-                         }
+                         },
+                         {
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Service": "lambda.amazonaws.com"
+                            },
+                            "Action": [
+                                "sts:AssumeRole"
+                            ]
+                        }
+
                      ]
                  },
-                 "Path":"/",
-                 "Policies": [
-                     {
-                         "PolicyName": "ec2-tag-update",
-                         "PolicyDocument": {
-                             
-                                 "Version": "2012-10-17",
-                                 "Statement": [
-                                     {
-                                         "Sid": "VisualEditor0",
-                                         "Effect": "Allow",
-                                         "Action": [
-                                             "ec2:DeleteTags",
-                                             "ec2:CreateTags"
-                                         ],
-                                         "Resource": "*"
-                                     }
-                                 ]
-                             
-                         }
-                     }
-                 ],
                  "ManagedPolicyArns": [
-                     "arn:aws:iam::aws:policy/ReadOnlyAccess"
-                     
-                 ]                
+                    "arn:aws:iam::aws:policy/ReadOnlyAccess" 
+             ]               
              }
          }
      }
