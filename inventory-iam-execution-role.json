@@ -1,0 +1,52 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+     "Resources": {
+         "cloudwatchalarm": {
+             "Type": "AWS::IAM::Role",
+             "Properties": {
+                 "RoleName": "inventory-iam-execution-role",
+                 "Description":"This IAM role allows master lambda inventory to execute inventory scan",
+                 "AssumeRolePolicyDocument": {
+                     "Version": "2012-10-17",
+                     "Statement": [
+                         {
+                             "Effect": "Allow",
+                             "Principal": {
+                                 "AWS": "arn:aws:iam::<master-account-number>:root"
+                             },
+                             "Action": [
+                                 "sts:AssumeRole"
+                             ]
+                         }
+                     ]
+                 },
+                 "Path":"/",
+                 "Policies": [
+                     {
+                         "PolicyName": "ec2-tag-update",
+                         "PolicyDocument": {
+                             
+                                 "Version": "2012-10-17",
+                                 "Statement": [
+                                     {
+                                         "Sid": "VisualEditor0",
+                                         "Effect": "Allow",
+                                         "Action": [
+                                             "ec2:DeleteTags",
+                                             "ec2:CreateTags"
+                                         ],
+                                         "Resource": "*"
+                                     }
+                                 ]
+                             
+                         }
+                     }
+                 ],
+                 "ManagedPolicyArns": [
+                     "arn:aws:iam::aws:policy/ReadOnlyAccess"
+                     
+                 ]                
+             }
+         }
+     }
+ }
