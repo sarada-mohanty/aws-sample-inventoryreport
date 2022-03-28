@@ -16,7 +16,7 @@ def lambda_handler(event, context):
     
     ssm = boto3.client('ssm',region_name='us-east-1')
 
-    ssm_res = ssm.get_parameters(Names=['<your_parameter_store_name>'], WithDecryption=True)
+    ssm_res = ssm.get_parameters(Names=['Inventory-Engine-Accounts'], WithDecryption=True)
     x = ssm_res.get('Parameters')
     aws_accountnumbers = x[0]['Value']
     
@@ -51,7 +51,7 @@ def lambda_handler(event, context):
     for acct_id in acct_list:
         print('\n Scanning Inventory for account: '+acct_id)
         sts_connection = boto3.client('sts')
-        acct_b = sts_connection.assume_role(RoleArn="arn:aws:iam::"+acct_id+":role/lambda_admin",RoleSessionName="cross_acct_lambda")
+        acct_b = sts_connection.assume_role(RoleArn="arn:aws:iam::"+acct_id+":role/Inventory-IAM-Execution-Role",RoleSessionName="cross_acct_lambda")
     
         ACCESS_KEY = acct_b['Credentials']['AccessKeyId']
         SECRET_KEY = acct_b['Credentials']['SecretAccessKey']
@@ -81,6 +81,7 @@ def lambda_handler(event, context):
         #time.sleep(3)
         print("\nCSV is ready now uploading to S3...")
         s3client = boto3.client('s3',region_name='us-east-1')
-        s3client.put_object(Bucket='<your_bucket_name>',ContentType='application/vnd.ms-excel', Body=f.getvalue(),Key= (s3path+'/'+'EC2_Inventory_'+date_time+'.csv'))
+        s3client.put_object(Bucket='mys3bucket',ContentType='application/vnd.ms-excel', Body=f.getvalue(),Key= (s3path+'/'+'EC2_Inventory_'+date_time+'.csv'))
     f.close()
     print("\nCongratulations CSV is uploaded to S3 successfully...Enjoy :)")
+

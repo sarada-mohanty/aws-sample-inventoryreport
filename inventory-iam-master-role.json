@@ -25,14 +25,26 @@
                 "Path": "/",
                 "Policies": [
                     {
-                        "PolicyName": "STS-Assume",
+                        "PolicyName": "Master-InlinePolicy",
                         "PolicyDocument": {
                             "Version": "2012-10-17",
-                            "Statement": {
-                                "Effect": "Allow",
-                                "Action": "sts:AssumeRole",
-                                "Resource": "*"
-                            }
+                            "Statement": [
+                                {
+                                    "Sid": "masteraccountaccess",
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "ssm:GetParameters",
+                                        "ec2:DescribeRegions",
+                                        "s3:PutObject"
+                                    ],
+                                    "Resource": "*"
+                                },
+                                {
+                                    "Action": "sts:AssumeRole",
+                                    "Resource": "*",
+                                    "Effect": "Allow"
+                                }
+                            ]
                         }
                     }
                 ]
