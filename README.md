@@ -6,7 +6,7 @@ Objective: To get all desired AWS resources (in this case EC2 instances) details
 ![Architecture](./InventoryDiagram.jpg)
 
 1. Cloudwatch Event will trigger Lambda "inventory-engine".
-2. Lambda will the fetch AWS account numbers from Systems Manager (SSM) Parameter Store.
+2. Lambda will fetch AWS account numbers from Systems Manager (SSM) Parameter Store.
 3. Lambda assumes IAM role of each account one by one and scans EC2 instances then write the captured information to runtime csv.
 4. Lambda uploads the csv to S3 bucket.
 
@@ -26,4 +26,5 @@ Login to Execution AWS account console:
 
 Thats it!! Folks.. Now go ahead and trigger the Lambda to see the csv report.
 
-This script will scan single or multiple AWS accounts and will fetch all EC2 running with custom tags and will store the output in S3 in csv format.
+## NOTE:
+Above solution is tested and intended for testing purposes and is tested for around 80-100 resources/ec2 instances only. In case of production use do enhance and consider Lambda timeout and its scalability.
