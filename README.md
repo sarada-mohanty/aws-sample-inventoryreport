@@ -1,6 +1,6 @@
 # AWS Resources Inventory Report in CSV
 Objective: To get all desired AWS resources (in this case EC2 instances) details as inventory report in CSV format. This setup will scan single or multiple AWS accounts and will fetch all EC2 instances with custom tags and will store the output in S3 in csv format.
-//test change added
+//\\test change added
 
 ## Architecture
 
